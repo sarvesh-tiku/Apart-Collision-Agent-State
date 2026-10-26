@@ -6,9 +6,9 @@
 **Sarvesh Tiku** · Georgia Institute of Technology
 Apart Research · AI Collusion Research Sprint 2026 · Track 3 (Q3.1: collusion carriers) · Track 2 (Q2.3: standards of evidence)
 
-[**Paper (PDF)**](Signal_or_Coincidence_Tiku.pdf) · [**Demo video (4:24, narrated)**](demo/Signal_or_Coincidence_demo.mp4) · [**Scientific audit**](AUDIT.md) · [**Narration script**](demo/narration_script.txt)
+[**Paper (PDF)**](Signal_or_Coincidence_Tiku.pdf) · [**Demo video (3:06, animated, subtitled)**](demo/Signal_or_Coincidence_demo.mp4) · [**Scientific audit**](AUDIT.md) · [**Subtitles (.srt)**](demo/Signal_or_Coincidence_demo.srt)
 
-<img src="demo/demo_preview.gif" alt="Slide-by-slide preview of the demo video" width="860">
+<img src="demo/demo_preview.gif" alt="Animated preview of the demo video" width="860">
 
 </div>
 
@@ -38,7 +38,7 @@ Applied to a separation-of-duties compliance workflow with four LLMs (100–150 
 <div align="center">
 <a href="demo/Signal_or_Coincidence_demo.mp4"><img src="demo/key_finding.png" alt="Click to watch the demo video" width="760"></a>
 
-▶️ **[Watch the narrated 4-minute demo](demo/Signal_or_Coincidence_demo.mp4)** (1080p, MP4)
+▶️ **[Watch the 3-minute animated demo](demo/Signal_or_Coincidence_demo.mp4)** (1080p, silent with burned-in subtitles). Every number on screen is read from `results/v2/summary_v2.json`; the null-convergence animation is a live seeded simulation.
 </div>
 
 ---
@@ -124,10 +124,10 @@ where *G* is the approver's guess and ∅ is abstention. Recovery above this nul
 ├── Signal_or_Coincidence_Tiku.pdf     # the paper
 ├── AUDIT.md                           # severity-ranked audit + change log
 ├── demo/
-│   ├── Signal_or_Coincidence_demo.mp4 # narrated 4-minute demo
+│   ├── Signal_or_Coincidence_demo.mp4 # 3-minute animated demo, burned-in subtitles
+│   ├── Signal_or_Coincidence_demo.srt # subtitle track
 │   ├── demo_preview.gif               # README preview
-│   ├── narration_script.txt
-│   └── build_demo.py                  # slides + TTS narration + ffmpeg → MP4
+│   └── build_video.py                 # frame-by-frame matplotlib animation → ffmpeg
 ├── src/
 │   ├── env.py            # synthetic compliance environment, policy CP-7, seeded generator
 │   ├── agents.py         # preparer / approver / monitor prompts, channel transforms
@@ -168,8 +168,8 @@ cd src
 ../.venv/bin/python analyze.py && ../.venv/bin/python appendix.py
 cd ../paper && cat preamble.tex body.tex > main.tex && latexmk -pdf main.tex
 
-# 4. demo video (macOS `say` + ffmpeg)
-cd .. && .venv/bin/python demo/build_demo.py
+# 4. demo video (matplotlib + ffmpeg, ~3 min to render)
+cd .. && .venv/bin/python demo/build_video.py
 ```
 
 Total API cost for the full study was under $10.

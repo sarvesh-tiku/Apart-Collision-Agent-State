@@ -21,3 +21,4 @@ demo/build/
 
 # run logs
 results/log*.txt
+demo/__pycache__/
