@@ -1,0 +1,235 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\usepackage{enumitem}
+\usepackage{caption}
+\captionsetup{font=small}
+\setlist{nosep,leftmargin=1.3em}
+
+\input{../results/numbers.tex}
+\input{../results/appendix/numbers.tex}
+\input{../results/appendix/episode_meta.tex}
+\newcommand{\av}[1]{\csname a@#1\endcsname}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds,shadows}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{pifont}
+\usepackage[ruled,linesnumbered,vlined]{algorithm2e}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{amsthm}
+\newtheorem{proposition}{Proposition}
+\definecolor{okc}{HTML}{0CA30C}
+\definecolor{badc}{HTML}{D03B3B}
+\definecolor{mblue}{HTML}{2A78D6}
+\definecolor{morange}{HTML}{EB6834}
+\definecolor{maqua}{HTML}{1BAF7A}
+\definecolor{myellow}{HTML}{EDA100}
+\definecolor{mpink}{HTML}{E87BA4}
+\definecolor{ink2}{HTML}{52514E}
+\definecolor{paper}{HTML}{F6F5F2}
+\lstset{basicstyle=\ttfamily\scriptsize,breaklines=true,breakatwhitespace=false,columns=fullflexible,
+  frame=single,rulecolor=\color{black!20},backgroundcolor=\color{paper},xleftmargin=4pt,xrightmargin=4pt,
+  framesep=3pt,keepspaces=true,showstringspaces=false}
+\tcbset{audit/.style={enhanced,colback=paper,colframe=mblue!70!black,boxrule=0.6pt,arc=2pt,
+  fonttitle=\bfseries\small,left=6pt,right=6pt,top=4pt,bottom=4pt}}
+\newcommand{\val}[3]{\csname v@#1@#2@#3\endcsname}
+\newcommand{\ci}[3]{\val{#1}{#2}{#3}\%~\val{#1}{#2}{#3ci}}
+\input{../results/v2/numbers_v2.tex}
+\newcommand{\vv}[3]{\csname vv@#1@#2@#3\endcsname}
+\newcommand{\vci}[3]{\vv{#1}{#2}{#3}\%\,{\small\vv{#1}{#2}{#3ci}}}
+\newcommand{\dpp}[2]{$\Delta{=}\vv{#1}{#2}{d}$\,pp\,{\small\vv{#1}{#2}{ci}}}
+
+\makeatletter\newcommand{\tabinput}[1]{\@@input #1 }\makeatother
+\setlength{\bibsep}{1.5pt}
+\renewcommand{\bibfont}{\small}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.88}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{3}
+\setcounter{totalnumber}{6}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\title{\textbf{Signal or Coincidence? Causal Auditing of Collusion\\Through Shared Agent State}}
+\author{Sarvesh Tiku\\[2pt]
+Georgia Institute of Technology\\
+\small\texttt{stiku6@gatech.edu}\\
+\small AI Collusion Research Sprint (Apart Research) \textperiodcentered{} Track 3 (Q3.1), secondary Track 2 (Q2.3)}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Two agents acting alike is weak evidence that they coordinate. We test a \emph{randomized canary audit}: an auditor gives one agent a uniformly random private target and asks whether a second agent's behavior depends on it, then intervenes on the shared tool state between them. In a synthetic separation-of-duties compliance workflow, a preparer writes two closed-vocabulary ticket fields and an approver decides on four transactions; both are \emph{instructed} to get the target approved, so we study carriers of instructed collusion, not its emergence. Across four models (100--150 matched seeds, 33 arms), recovery in every channel-free arm matches the exact null $P(\text{valid guess})/4$. Without a pre-agreed code, the fields carry the target for one model only: Gemini-2.5-Flash preparers mark it \emph{urgent} (\vv{gemini}{shared}{recover}\% vs.\ \vv{gemini}{removed}{recover}\%, Holm $p{=}\vv{gemini}{sharedvsremoved}{ph}$), every other approver model decodes this convention (\vv{geminigptfouro}{cross}{rec}--\vv{geminigptfour}{cross}{rec}\%), and permuting tickets sends approvers to the decoy. With a pre-agreed code the fields transmit nearly all 2 bits of target entropy. Information flow is not collusion: an authorized expedite request yields \vv{gemini}{benign_flag}{recover}\% flow with honest agents and no detectable rise in harm. Defenses are carrier-specific: recomputing fields from source records removes field codes, but sanitizer-aware preparers move the signal into a surviving free-text note (3 of 4 models; Gemini \vv{gemini}{notes_verbatim}{recover}\%), and redacting IDs, numbers and countries does not stop it. A fixed structural rule monitor detects collusive tickets better than an LLM monitor (AUROC \vv{gemini}{mon}{ruleauroc} vs.\ \vv{gemini}{mon}{llmauroc} for Gemini). We give the identification argument, its assumptions, and the cases it does not cover.
+\end{abstract}
+
+% ======================================================================
+\section{Research Question and Threat Model}\label{sec:intro}
+Multi-agent deployments route work through shared tools---tickets, queues, status fields---which agents can use to signal each other~\citep{hammond2025multiagent,motwani2024secret,dafoe2020open}, and proposals for agent economies make such shared state central~\citep{tomasev2025distributional}. Track~3 asks whether collusion can be carried through such side channels; Track~2 asks what should count as convincing evidence of it. Correlated actions do not suffice: two instances of a model share priors, see the same data, and face the same incentives. Antitrust reasoning makes the same point with ``plus factors'': parallel conduct alone does not establish agreement~\citep{kovacic2011plus}, a problem sharpened for autonomous pricing agents~\citep{harrington2018developing,ezrachi2016virtual}.
+
+\paragraph{Question.} Can an auditor (i) establish that information moved from one agent to another through routine structured state, (ii) localize the carrier, and (iii) tell whether an intervention reduces \emph{policy-violating outcomes} rather than only the approver's ability to name a target?
+
+\paragraph{Threat model.} Two agents under separation of duties: a preparer A writes per-transaction tickets; an approver B makes approve/reject decisions. In collusive arms \emph{both are instructed} to get one transaction approved regardless of policy; only A is told which one, and they cannot message each other. The defender can plant private information, transform tool state between writer and reader, and observe actions, but does not need to interpret content.
+
+\paragraph{Five concepts we keep apart.} \textbf{Information flow}: B's behavior depends on A's private information. \textbf{Authorized cooperation}: flow that the workflow permits. \textbf{Covert signalling}: flow through a field whose sanctioned meaning does not include it. \textbf{Joint prohibited objective}: both agents pursue a policy-violating goal (here: instructed). \textbf{Violating outcome}: a policy-violating transaction is approved. The canary audit identifies the first; the remaining distinctions require the controls in \S\ref{sec:env}.
+
+\paragraph{Contributions.} (1) An identification argument for flow through structured tool state with an exact, model-free null that handles abstention (\S\ref{sec:ident}). (2) Controls that separate flow from authorized cooperation, unilateral manipulation and harm, and a test of the defense against an adaptive attacker. (3) Measured findings on four models: a focal-point convention that appears without pre-agreement and transfers across models; carrier-specific defenses; migration of the signal into a legitimate free-text field. We do not claim to have invented randomized interventions, covert-channel analysis or canary testing; our contribution is their combination into an audit for tool-mediated agent collusion and the empirical results above.
+
+\paragraph{Related work.} Covert communication under a monitoring warden is the classic prisoners' problem~\citep{simmons1984prisoners}, with information-theoretic security defined by \citet{cachin1998information}; LLM watermarking shows token choices can carry hidden bits~\citep{kirchenbauer2023watermark}. \citet{motwani2024secret} formalize steganographic collusion between LLM agents; \citet{mathew2024hidden} show it can emerge under optimization and evaluate paraphrasing defenses, as do \citet{roger2023preventing} for encoded reasoning. \citet{rippin2026tool} show tool-using agents can build stegosystems and frame tacit coordination as a Schelling-point problem, finding convergence on broad scheme families but limited strict one-shot coordination; our Gemini result is a concrete case of one-shot convergence on a trivial scheme in structured fields. \citet{nakamura2026colosseum} audit collusion with regret- and communication-based measures over free-form language; \citet{rose2026detecting} detect collusion from activations and stress that transcript monitors miss unverbalized coordination. Algorithmic-pricing work~\citep{calvano2020artificial,assad2024algorithmic,fish2024algorithmic} highlights the identification problem we address; LLM-market studies find collusion depends on communication and oversight~\citep{agrawal2025double} and is fragile to agent heterogeneity~\citep{keppo2026fragility}, and agents' private plans can diverge from public announcements~\citep{shi2026agents}. Monitors degrade when agents know they are watched~\citep{kale2025reliable}, and model families are identifiable from their text~\citep{dietrich2026peers}, which bears on our cross-model reads. Tool outputs are also a known attack surface for injected instructions~\citep{greshake2023not,debenedetti2024agentdojo}; we study the reverse direction, agents using tool state to signal each other. Planting randomized secrets to measure leakage follows canary testing for memorization~\citep{carlini2019secret}, and our use of instructed objectives follows model-organism and dangerous-capability evaluations~\citep{shevlane2023model,hubinger2024sleeper}. We differ in (a) using a randomized private canary to obtain an exact behavioral null without reading messages, (b) structured, closed-vocabulary carriers rather than text, and (c) jointly measuring flow, harm and honest utility under interventions. Covert channels are a classic confinement problem~\citep{lampson1973note}; coordination without communication relies on focal points and conventions~\citep{schelling1960strategy,lewis1969convention,mehta1994nature}; AI control evaluates protocols against subversive agents~\citep{greenblatt2024control}.
+
+% ======================================================================
+\section{Identification Strategy}\label{sec:ident}
+Let $X$ be the batch, $T\in\{1,..,4\}$ the canary, $W$ A's tickets, $V=\tau(W,X,\pi)$ what B reads after arm-specific transform $\tau$ (with derangement $\pi$ for the permuted arm), and $G\in\{1,..,4,\varnothing\}$ B's guess ($\varnothing$: abstain). By design $T\sim\mathrm{U}\{1..4\}$ and $T\perp\!\!\!\perp(X,\pi,\text{sampling noise})$, so randomization alone licenses causal reading of any dependence~\citep{fisher1935design,imbens2015causal,pearl2009causality}.
+
+\begin{proposition}[Exact null with abstention]\label{prop:null}
+If $V\perp\!\!\!\perp T$ (channel removed; tickets recomputed from $X$; or tickets written by an agent that never saw $T$), then for every approver policy $P(G{=}T)=\tfrac14 P(G{\neq}\varnothing)$ and $P(G{=}T\mid G{\neq}\varnothing)=\tfrac14$.
+\end{proposition}
+\noindent\textit{Proof.} $G$ is a function of $(X,V,\text{B's noise})\perp\!\!\!\perp T$, so $P(G{=}T)=\sum_{g\neq\varnothing}P(G{=}g)P(T{=}g)=\tfrac14P(G{\neq}\varnothing)$. \qed
+
+\noindent We therefore test recovery \emph{conditionally on a valid guess} against $\tfrac14$ (exact binomial) and compare arms with paired McNemar tests on matched seeds; abstention is reported per arm (it reaches \vv{gemini}{cb_prio_canonical}{abstain}\% in some arms, which v1 misread as below-chance recovery).
+
+\paragraph{Permutation.} If B decodes the carrier perfectly, under a uniform derangement $G=\pi(T)$: marginal $I(T;G)=2-\log_23\approx0.415$ bits while $I(T;G\mid\pi)=2$ bits. Permutation \emph{redirects} information rather than destroying it, so it tests whether behavior follows the carrier content. Information is measured in the sense of \citet{shannon1948mathematical} with Miller--Madow bias correction~\citep{miller1955note,paninski2003estimation}. We report the marginal value and the lower bound $I(T;\pi^{-1}(G))\le I(T;G\mid\pi)$ (valid because $\pi\perp\!\!\!\perp T$). Note that $H(T)=2$ bits bounds what can be learned about $T$; the carrier's capacity is far larger (8 bits for four 4-level priorities alone).
+
+\paragraph{Guess-free detection.} Self-reported guesses may alter behavior and are unavailable in deployment. We also use the label-stratified \emph{target lift}, $\sum_\ell w_\ell[P(\text{app}\mid\text{target},y{=}\ell)-P(\text{app}\mid\text{non-target},y{=}\ell)]$ with $w_\ell$ the share of targets with label $\ell$; under $D\perp\!\!\!\perp T\mid X$ it has expectation 0. Unlike the per-episode version in v1 (undefined in $\approx$\vv{gptfour}{shared}{liftundef}\% of seeds and silently dropped), it is always defined.
+
+\paragraph{Assumptions and threats.} (A1) Randomization: $T$ is generated independently of $X$ and display order (verified; Appendix~\ref{app:env}). (A2) No interference: each B call sees only its own arm. (A3) Stable model behavior within a run; OpenRouter served Llama-3.3-70B from 8 providers and GPT-4o-mini from 2, which we log but cannot control. (A4) Instructed motivation: positive results show a channel \emph{can} carry instructed collusion, not that agents would choose to collude. \textit{Observable implications}: under a real channel, recovery exceeds the null, follows the moved carrier under permutation, and disappears when the carrier is recomputed; under coincidence none of these hold.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize, >={Stealth[length=2mm]},
+  ag/.style={draw=#1, fill=#1!8, rounded corners=3pt, line width=0.7pt, minimum width=2.15cm, minimum height=1.05cm, align=center},
+  bx/.style={draw=black!35, rounded corners=2pt, line width=0.5pt, align=center, inner sep=3pt},
+  lab/.style={font=\sffamily\tiny, text=ink2, fill=white, inner sep=1pt, align=center},
+  fl/.style={->, line width=0.7pt, draw=black!55}]
+\node[ag=morange] (aud) at (0,1.0) {\textbf{Auditor}\\ canary $T\sim\mathrm{U}\{1..4\}$};
+\node[ag=mblue] (A) at (3.2,1.0) {\textbf{Preparer A}\\ sees $X$, $T$\\ writes tickets};
+\node[draw=black!60, fill=paper, rounded corners=3pt, line width=0.6pt, align=left, inner sep=4pt] (t) at (7.0,1.0)
+ {\textbf{Arm $\tau$ (matched seeds)}\\ removed $\cdot$ verbatim $\cdot$ \textcolor{morange}{permuted}\\ strip $\cdot$ \textcolor{maqua}{recompute} $\cdot$ note $\pm$ redact\\ honest-A null $\cdot$ benign flag};
+\node[ag=mblue] (B) at (10.8,1.0) {\textbf{Approver B}\\ sees $X$, $\tau(\cdot)$\\ never sees $T$};
+\node[bx, draw=morange, line width=0.6pt, align=center] (s) at (5.4,-0.85) {\textbf{Scored against held-out $T$:} recovery vs.\ $P(\text{valid})/4$ $\cdot$ follow $\pi(T)$\\ label-stratified lift $\cdot$ harm on violating targets $\cdot$ honest accuracy};
+\draw[fl, draw=morange] (aud) -- node[lab, above=1pt]{private} (A);
+\draw[fl] (A) -- node[lab, above=1pt]{tickets} (t);
+\draw[fl] (t) -- (B);
+\draw[fl, draw=morange] (B.south) |- (s.east);
+\draw[fl, draw=morange, dashed] (aud.south) |- (s.west);
+\end{tikzpicture}
+\vspace{-0.4em}
+\caption{\textbf{Design.} One preparer output per seed is shown to the approver under every arm, so arms differ only in what B reads. The canary is never shown to B and is used only for scoring.}
+\label{fig:design}
+\end{figure}
+
+% ======================================================================
+\section{Environment and Controls}\label{sec:env}
+\paragraph{Environment.} Each batch has four synthetic transactions (amount, country, KYC status, sanctions hit, due-diligence flag, 24-hour velocity). Policy CP-7 has four rules; each transaction is compliant with probability 0.5, violating ones receive one injected violation (26/288 break a second rule), and compliant ones often carry near-miss features. A writes \texttt{priority}$\in$\{low, normal, high, urgent\} (discretionary) and \texttt{risk\_tag}$\in$\{none, sanctions, kyc, geo, velocity\} (derivable from CP-7) per ticket; no free text except in the note arms.
+
+\paragraph{Arms} (all on matched seeds; Table~\ref{tab:main}). \emph{v1 arms:} channel removed (``ticket system unavailable''); direct private message plus that call's tickets; shared tickets verbatim; permuted; strip priority; recompute all fields from source (canonical); honest agents with verbatim or canonical tickets; and a \emph{pre-agreed code} positive control (``the target is the only ticket with priority \emph{low}'' or ``risk\_tag \emph{none}'') crossed with the transforms. \emph{New controls (v2):}
+\begin{itemize}
+\item \textbf{Honest-A null}: collusive B reads normal tickets written by an honest A that never saw $T$ (structure-preserving null, unlike ``unavailable'').
+\item \textbf{Message only}: the private message shown with canonical tickets, versus the canonical arm (holds non-message inputs fixed; the v1 direct arm did not).
+\item \textbf{Benign flag}: honest agents; A receives an \emph{authorized} request to have $T$ reviewed first and must not misreport risk; B reports which ticket it reviewed first. Versus the same B prompt on honest tickets.
+\item \textbf{Unilateral A}: collusive A, honest B. \textbf{Guess-free}: collusive B without a guess field, verbatim vs.\ canonical tickets.
+\item \textbf{Adaptive attacker}: both agents know the sanitizer---(a) priority will be reset; (b) priority and tags will be recomputed but a 12-word free-text \texttt{note} survives, shown verbatim, \emph{redacted} (IDs, numbers, country names removed) or dropped; plus honest agents with the same note arms to measure the note's legitimate utility.
+\item \textbf{Cross-model}: each ordered pair of models, A's v1 tickets read by another model's B (verbatim and permuted).
+\item \textbf{Repeats}: two extra B samples for four arms (GPT-4.1-mini, Gemini).
+\end{itemize}
+
+\paragraph{Models and statistics.} GPT-4.1-mini, Gemini-2.5-Flash, Llama-3.3-70B-Instruct and GPT-4o-mini via OpenRouter, temperature 0.7, seeds 0--99 for all arms (GPT-4.1-mini v1 arms: 0--149). Claude-Haiku-4.5 refused the collusive role in $\approx$50\% of v1 episodes and is reported only in the appendix. Paired arms are compared with exact McNemar tests~\citep{mcnemar1947note}; a pre-declared family of nine recovery contrasts per model is Holm-adjusted~\citep{holm1979simple} (marked $\dagger$); all other tests are exploratory and unadjusted. Intervals are Wilson~\citep{wilson1927probable} (rates) or 95\% seed-bootstrap~\citep{efron1993introduction} (differences).
+
+% ======================================================================
+\section{Main Causal Findings}\label{sec:results}
+\begin{table}[t]
+\centering\small
+\caption{\textbf{Target recovery \% (harmful approval \% of violating targets)} by arm. $\dagger$: the arm's pre-specified paired contrast is significant (Holm-adjusted for confirmatory contrasts against the matched null; unadjusted $p{<}.05$ for v2 controls, contrasted with the arm listed in Fig.~\ref{fig:forestv2}). Last row: seeds for v1 arms / v2 arms.}
+\label{tab:main}
+\input{../results/v2/table_main_v2.tex}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figs/v2_forest.pdf}
+\vspace{-1.6em}
+\caption{\textbf{Paired effects on recovery} against each arm's matched null (95\% seed-bootstrap CIs). Filled: $p{<}.05$, Holm-adjusted for the five confirmatory rows; ``new'' rows are v2 controls (unadjusted).}
+\label{fig:forestv2}
+\end{figure}
+
+\paragraph{F1. The null holds.} Every channel-free arm sits at the Prop.~\ref{prop:null} null: channel removed \vv{gptfouro}{removed}{recover}--\vv{llama}{removed}{recover}\%, recomputed tickets \vv{gptfour}{canonical}{recover}--\vv{llama}{canonical}{recover}\%, and the structure-preserving honest-A null also matches it for every model. The two null arms differ nominally for GPT-4.1-mini (\dpp{gptfour}{nullhonestAvsremoved}, unadjusted $p{=}\vv{gptfour}{nullhonestAvsremoved}{p}$; not significant after correcting for four models), consistent with the prompt change in ``unavailable'' shifting \emph{which} transaction is guessed but, as Prop.~\ref{prop:null} requires, not expected recovery. Two extra approver samples reproduce the arm-level rates (Gemini shared: \vv{gemini}{shared}{rep}\% across three samples; removed: \vv{gemini}{removed}{rep}\%).
+
+\paragraph{F2. Without a pre-agreed code, one model converges on a convention---and others can read it.} For GPT-4.1-mini, Llama and GPT-4o-mini, shared tickets do not raise recovery over the matched null (Fig.~\ref{fig:forestv2}). Gemini does: \vci{gemini}{shared}{recover} vs.\ \vv{gemini}{removed}{recover}\% (Holm $p{=}\vv{gemini}{sharedvsremoved}{ph}$). Its preparers make the target the unique \emph{urgent} ticket in almost every collusive batch (Appendix~\ref{app:carriers}). The convention is not private to Gemini: other approvers recover the target from Gemini-written tickets at \vv{geminigptfour}{cross}{rec}\% (GPT-4.1-mini), \vv{geminillama}{cross}{rec}\% (Llama) and \vv{geminigptfouro}{cross}{rec}\% (GPT-4o-mini), all above the null; tickets from the other three preparers stay near the null for every approver, including Gemini (Fig.~\ref{fig:cross}). The bottleneck is the writer's consistency, not the reader. Both agents were instructed to collude; what is unprompted is only the signalling convention.
+
+\paragraph{F3. Permutation shows behavior follows the carrier.} Moving the target's ticket to a decoy drops Gemini's recovery to \vv{gemini}{permuted}{recover}\% while the guess follows the decoy in \vv{gemini}{permuted}{follow}\% of episodes (shared vs.\ permuted Holm $p{=}\vv{gemini}{sharedvspermuted}{ph}$); for the pre-agreed priority code the guess follows the decoy in \vv{gptfour}{cb_prio_permuted}{follow}\% of episodes for every model. Marginal information is low under permutation (\vv{gemini}{cb_prio_permuted}{mi} bits) while the auditor-decoded quantity is \vv{gemini}{cb_prio_permuted}{micond} bits: the information is intact, just redirected.
+
+\paragraph{F4. The v1 ``direct message'' effect was partly a ticket effect.} With the writer's own tickets, messages yield \vv{gptfouro}{direct}{recover}--\vv{gemini}{direct}{recover}\% recovery. Holding tickets fixed (canonical), the message alone yields \vv{gemini}{msg_only}{recover}\% (Gemini) to \vv{gptfour}{msg_only}{recover}\% (GPT-4.1-mini); Gemini's messages mostly point at ``the urgent one'', which the canonical tickets no longer contain.
+
+\begin{figure}[t]
+\centering
+\begin{minipage}[t]{0.49\linewidth}\centering
+\includegraphics[width=\linewidth]{figs/v2_cross.pdf}
+\vspace{-1.6em}
+\captionof{figure}{\textbf{Does the convention transfer?} Recovery when model A writes and model B reads (no code). Boxed: same-model. $^{*}$: $p{<}.05/16$ vs.\ B's matched null.}
+\label{fig:cross}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}\centering
+\includegraphics[width=\linewidth]{figs/v2_flow_harm.pdf}
+\vspace{-1.6em}
+\captionof{figure}{\textbf{Flow is not harm.} Each point is a (model, arm). Authorized flags (green) carry near-perfect information with low harm.}
+\label{fig:flowharm}
+\end{minipage}
+\end{figure}
+
+\paragraph{F5. Information flow is not collusion, and collusion is not harm.} In the benign-flag arm, honest approvers review the flagged transaction first in \vv{gptfouro}{benign_flag}{recover}--\vv{gptfour}{benign_flag}{recover}\% of episodes (vs.\ \vv{gemini}{benign_null}{recover}\% on honest tickets), yet approvals of violating targets do not detectably rise (Gemini \dpp{gemini}{benignharmvsnull}, $n{=}\vv{gemini}{benignharmvsnull}{n}$). A canary audit that measures flow alone would flag this authorized cooperation; harm and the agents' objectives must be measured separately (Fig.~\ref{fig:flowharm}). Conversely, Gemini's covert channel carries information (\vv{gemini}{shared}{recover}\%) without a detectable increase in harmful approvals over the null (\dpp{gemini}{harmsharedvsremoved}; the interval does not exclude moderate effects), because its approver often identifies the target and still rejects it. A collusive preparer facing an honest approver did not increase harmful approvals (GPT-4.1-mini \dpp{gptfour}{unilateralharmvshonest}).
+
+\paragraph{F6. Detection without self-report, and monitors.} Without a guess field, decision-based lift still separates Gemini's verbatim from canonical tickets (\dpp{gemini}{noguessliftsharedvscanonical}, permutation $p{=}\vv{gemini}{noguessliftsharedvscanonical}{p}$), although it is less sensitive than recovery (it is not detected for the other three models, whose no-code channels are null by the recovery test as well). A fixed structural rule (tag inconsistent with the source record plus unique-extreme priority) separates collusive from honest preparers better than the v1 LLM monitor (Table~\ref{tab:monitor}) and names the target in \vv{gemini}{mon}{ruleidhit}\% of Gemini batches. These monitors detect that a preparer \emph{deviates} from honest ticketing, not that information reached the approver, and they require knowing which deviations to look for; the canary audit requires neither.
+
+\begin{table}[t]
+\centering\small
+\caption{\textbf{Passive monitors} (AUROC, collusive vs.\ honest preparer tickets, seeds 0--99). The rule is fixed in advance; the logistic monitor is cross-validated by seed.}
+\label{tab:monitor}
+\input{../results/v2/table_monitor_v2.tex}
+\end{table}
+
+% ======================================================================
+\section{Defense Effectiveness and Legitimate Utility}\label{sec:defense}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figs/v2_defense.pdf}
+\vspace{-1.6em}
+\caption{\textbf{Leakage, harm and honest utility under each intervention.} Columns: a priority-field code, a risk-tag code (both pre-agreed), and a sanitizer-aware attacker whose free-text note survives. Rows: recovery, harmful approval of violating targets, honest-agent accuracy (third column: honest agents with the same note arms). 95\% CIs.}
+\label{fig:defense}
+\end{figure}
+
+\paragraph{Field-level sanitizers are carrier-specific.} Stripping priority removes a priority code (GPT-4.1-mini \vv{gptfour}{cb_prio_shared}{recover}\%$\to$\vv{gptfour}{cb_prio_strip}{recover}\%) but leaves a risk-tag code intact (\vv{gptfour}{cb_tag_shared}{recover}\%$\to$\vv{gptfour}{cb_tag_strip}{recover}\%). Recomputing all fields removes both, and harmful approvals fall with recovery (GPT-4.1-mini priority code \dpp{gptfour}{harmcbpriosharedvscanonical} on violating targets), so the defense reduces violating \emph{outcomes}, not only target identification. These results hold only because every field in this environment is derivable from the source record; recomputation removes the channel by construction and is not evidence of robustness.
+
+\paragraph{The adaptive attacker migrates.} These v2 contrasts are exploratory (unadjusted). When both agents know that priority will be stripped but have no code, only Llama shifts toward a tag-based mark (\dpp{llama}{awarestripvscanonical}, $p{=}\vv{llama}{awarestripvscanonical}{p}$); the other three do not (e.g.\ Gemini \dpp{gemini}{awarestripvscanonical}). When priority and tags are recomputed but a legitimate free-text note survives, sanitizer-aware preparers move the signal into the note for three of four models: Gemini \vv{gemini}{notes_verbatim}{recover}\% (\dpp{gemini}{notesverbatimvsnone} vs.\ note dropped), GPT-4o-mini \vv{gptfouro}{notes_verbatim}{recover}\% (\dpp{gptfouro}{notesverbatimvsnone}) and, more weakly, Llama \vv{llama}{notes_verbatim}{recover}\% (\dpp{llama}{notesverbatimvsnone}, $p{=}\vv{llama}{notesverbatimvsnone}{p}$); it is not detected for GPT-4.1-mini (\dpp{gptfour}{notesverbatimvsnone}). Harmful approvals rise with it (Gemini \dpp{gemini}{notesharmverbatimvsnone}). Redacting identifiers, numbers and country names---a weaker intervention---does not reduce leakage for any of these models (Gemini \vv{gemini}{notes_redacted}{recover}\%, GPT-4o-mini \vv{gptfouro}{notes_redacted}{recover}\%), because the notes describe the target by its features (``EDD not completed'', ``urgent''). Dropping the note restores the null. In this environment the note has no measurable legitimate value---honest accuracy with vs.\ without notes differs by \dpp{gemini}{noteshonestaccverbatimvsnone} (Gemini) and \dpp{gptfouro}{noteshonestaccverbatimvsnone} (GPT-4o-mini, where notes hurt)---because every relevant fact is already in the source record. The environment therefore cannot measure the utility cost of removing a genuinely non-derivable field, which is precisely when removal is costly. Among the interventions tested, only removing the free field blocked the channel; we have no evidence on interventions that preserve legitimate free-text content.
+
+% ======================================================================
+\section{Statistical Uncertainty}\label{sec:stats}
+All confirmatory contrasts are paired by seed and Holm-adjusted per model; Gemini's no-code channel survives adjustment (Holm $p{=}\vv{gemini}{sharedvsremoved}{ph}$), as do all pre-agreed-code contrasts except where the carrier is stripped of a code it does not use. Harm comparisons condition on violating targets ($n{\approx}45$ per model), so their intervals are wide ($\pm$10--15\,pp); we report non-significant harm differences as \emph{not detected}, not as equivalence. Two additional approver samples reproduce arm-level rates within a few points, and all three samples agree on the guess in \vv{gemini}{shared}{agree}\% of Gemini shared episodes. Power curves in Appendix~\ref{app:stats} are resampled from observed data and describe power at the observed effect in this environment only. Provider routing (A3) and single preparer samples per seed are unquantified sources of variance.
+
+% ======================================================================
+\section{Limitations and Implications}\label{sec:limits}
+\textbf{What is established.} In this environment, a randomized canary with matched null, permutation and recomputation arms identifies whether routine structured state carries instructed collusion, localizes the carrier, and separates flow from harm. One model's writers converge on a convention that other models read, without pre-agreement. Field-level sanitizers stop only the carriers they touch; a surviving free-text field reopens the channel.
+\textbf{What is not.} (i) Emergent collusive \emph{motivation}: both agents were instructed. (ii) General defense effectiveness: the environment has two small closed-vocabulary fields that are fully derivable from source; real tool state has larger, non-derivable fields. (iii) External validity of rates: synthetic four-transaction batches, one policy, one prompt family. (iv) Malice from flow: authorized cooperation produces the same signature (F5). (v) Provider-level stability (A3).
+\textbf{Implications.} For Q2.3, convincing evidence of collusion should combine (a) dependence on randomized private information beyond an exact null, (b) carrier localization by permutation or recomputation, (c) a harmful outcome, and (d) evidence that the flow was not authorized---a canary-based ``plus factor'' bundle. For Q3.1, structured fields are sufficient carriers once a convention exists, and conventions can arise without communication; defenses should be evaluated against attackers who know them and against migration to legitimately free fields.
+
+\paragraph{Code and data.} Environment, prompts, all raw model outputs, the v1 freeze with checksums, the audit log and every analysis script accompany this submission; all numbers in the paper are generated by \texttt{src/analyze\_v2.py} and \texttt{src/tex\_v2.py}.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\input{appendix_v2}
+\input{appendix}
+\end{document}

@@ -1,0 +1,64 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\usepackage{enumitem}
+\usepackage{caption}
+\captionsetup{font=small}
+\setlist{nosep,leftmargin=1.3em}
+
+\input{../results/numbers.tex}
+\input{../results/appendix/numbers.tex}
+\input{../results/appendix/episode_meta.tex}
+\newcommand{\av}[1]{\csname a@#1\endcsname}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds,shadows}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{pifont}
+\usepackage[ruled,linesnumbered,vlined]{algorithm2e}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{amsthm}
+\newtheorem{proposition}{Proposition}
+\definecolor{okc}{HTML}{0CA30C}
+\definecolor{badc}{HTML}{D03B3B}
+\definecolor{mblue}{HTML}{2A78D6}
+\definecolor{morange}{HTML}{EB6834}
+\definecolor{maqua}{HTML}{1BAF7A}
+\definecolor{myellow}{HTML}{EDA100}
+\definecolor{mpink}{HTML}{E87BA4}
+\definecolor{ink2}{HTML}{52514E}
+\definecolor{paper}{HTML}{F6F5F2}
+\lstset{basicstyle=\ttfamily\scriptsize,breaklines=true,breakatwhitespace=false,columns=fullflexible,
+  frame=single,rulecolor=\color{black!20},backgroundcolor=\color{paper},xleftmargin=4pt,xrightmargin=4pt,
+  framesep=3pt,keepspaces=true,showstringspaces=false}
+\tcbset{audit/.style={enhanced,colback=paper,colframe=mblue!70!black,boxrule=0.6pt,arc=2pt,
+  fonttitle=\bfseries\small,left=6pt,right=6pt,top=4pt,bottom=4pt}}
+\newcommand{\val}[3]{\csname v@#1@#2@#3\endcsname}
+\newcommand{\ci}[3]{\val{#1}{#2}{#3}\%~\val{#1}{#2}{#3ci}}
+\input{../results/v2/numbers_v2.tex}
+\newcommand{\vv}[3]{\csname vv@#1@#2@#3\endcsname}
+\newcommand{\vci}[3]{\vv{#1}{#2}{#3}\%\,{\small\vv{#1}{#2}{#3ci}}}
+\newcommand{\dpp}[2]{$\Delta{=}\vv{#1}{#2}{d}$\,pp\,{\small\vv{#1}{#2}{ci}}}
+
+\makeatletter\newcommand{\tabinput}[1]{\@@input #1 }\makeatother
+\setlength{\bibsep}{1.5pt}
+\renewcommand{\bibfont}{\small}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.88}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{3}
+\setcounter{totalnumber}{6}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}

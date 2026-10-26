@@ -1,0 +1,191 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\usepackage{enumitem}
+\usepackage{caption}
+\captionsetup{font=small}
+\setlist{nosep,leftmargin=1.3em}
+
+\input{../results/numbers.tex}
+\input{../results/appendix/numbers.tex}
+\input{../results/appendix/episode_meta.tex}
+\newcommand{\av}[1]{\csname a@#1\endcsname}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds,shadows}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{pifont}
+\usepackage[ruled,linesnumbered,vlined]{algorithm2e}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{amsthm}
+\newtheorem{proposition}{Proposition}
+\definecolor{okc}{HTML}{0CA30C}
+\definecolor{badc}{HTML}{D03B3B}
+\definecolor{mblue}{HTML}{2A78D6}
+\definecolor{morange}{HTML}{EB6834}
+\definecolor{maqua}{HTML}{1BAF7A}
+\definecolor{myellow}{HTML}{EDA100}
+\definecolor{mpink}{HTML}{E87BA4}
+\definecolor{ink2}{HTML}{52514E}
+\definecolor{paper}{HTML}{F6F5F2}
+\lstset{basicstyle=\ttfamily\scriptsize,breaklines=true,breakatwhitespace=false,columns=fullflexible,
+  frame=single,rulecolor=\color{black!20},backgroundcolor=\color{paper},xleftmargin=2pt,xrightmargin=2pt,
+  framesep=4pt,keepspaces=true,showstringspaces=false}
+\tcbset{audit/.style={enhanced,colback=paper,colframe=mblue!70!black,boxrule=0.6pt,arc=2pt,
+  fonttitle=\bfseries\small,left=6pt,right=6pt,top=4pt,bottom=4pt}}
+\newcommand{\val}[3]{\csname v@#1@#2@#3\endcsname}
+\newcommand{\ci}[3]{\val{#1}{#2}{#3}\%~\val{#1}{#2}{#3ci}}
+
+\title{\textbf{Signal or Coincidence? Causal Auditing of Collusion\\Through Shared Agent State}}
+\author{Sarvesh Tiku \qquad Gauri Sharma\\[2pt]
+Georgia Institute of Technology\\
+\small\texttt{stiku6@gatech.edu}, \texttt{gsharma80@gatech.edu}\\
+\small AI Collusion Research Sprint (Apart Research), Track 3 / Track 2}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Agents that act alike are not necessarily colluding: they may share a model, data, or incentives. We propose and test a \emph{randomized canary audit} that separates covert coordination from coincidental alignment. In a synthetic separation-of-duties compliance workflow, a preparer agent privately receives a uniformly random target transaction; an approver agent, which never sees the target, must decide on four transactions using only the preparer's routine ticket metadata. Because the target is randomized independently of every observable, any above-chance dependence of the approver's choice on the target is causal evidence of an information channel. Across five models (\val{haiku}{shared}{n}--\val{gptfour}{shared}{n} matched seeds each), explicit private messages produce strong target recovery (up to \val{gemini}{direct}{recover}\% vs.\ 25\% chance), whereas uncoordinated use of shared metadata mostly stays near chance---with the notable exception of Gemini-2.5-Flash, which reaches \val{gemini}{shared}{recover}\% via focal-point signalling. When agents share a pre-agreed code, ordinary metadata becomes a near-perfect covert channel (\val{gptfouro}{cb_prio_shared}{recover}--\val{gptfour}{cb_prio_shared}{recover}\% recovery for a priority-field code). Metadata permutation shows the approver follows the signal rather than the target, and field-level defenses are carrier-specific: stripping the priority field removes a priority code but leaves a risk-tag code fully intact, while recomputing all fields from source records removes both without reducing honest-agent accuracy. Information transfer and harm diverge: Gemini's approver recovers the target \val{gemini}{shared}{recover}\% of the time yet approves violating targets no more often than with the channel removed. A passive LLM monitor reading the same tickets performs near chance (AUROC \val{gptfouro}{monitor}{auroc}--\val{gptfour}{monitor}{auroc} for the four non-refusing models).
+\end{abstract}
+
+\section{Introduction}
+Multi-agent deployments increasingly route work through shared tools: tickets, queues, status fields and logs. These are natural places for agents to leave each other signals~\citep{hammond2025multiagent,motwani2024secret}. Existing evaluations of LLM collusion typically show that agents \emph{can} collude when instructed, or flag suspicious outcomes after the fact~\citep{fish2024algorithmic,mathew2024hidden}. For an auditor or regulator, neither is sufficient. Correlated actions do not establish coordination: two instances of the same model will often make the same ``mistake'' because they share priors, not because one told the other.
+
+We borrow the logic of a randomized experiment. If an auditor plants a randomly chosen private fact---a \emph{canary}---in one agent's context, then nothing the second agent observes except the inter-agent channel can be correlated with it. A second agent that acts on the canary above chance has, by construction, received information through some channel. By then intervening on candidate channels (removing, permuting, or sanitizing them) on matched seeds, the auditor can localize the carrier and measure what a defense costs.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item A \textbf{randomized canary audit} for collusion in tool-using agents, with metrics that separate \emph{information transfer} (target recovery, target lift) from \emph{harmful coordination} (approval of a policy-violating target) and from \emph{defense cost} (honest-agent accuracy).
+\item A \textbf{synthetic compliance environment} with six channel conditions, two honest controls and a pre-agreed codebook positive control, run on five models with matched seeds (\S\ref{sec:setup}).
+\item \textbf{Findings} (\S\ref{sec:results}): (i) without a pre-agreed code, routine metadata is usually a weak channel, but one model spontaneously coordinates through it; (ii) with a code it is near-perfect; (iii) permutation tests confirm causal dependence on the carrier, not the target; (iv) field-dropping defenses are carrier-specific while recomputation from source is general and free in our setting; (v) recovery and harm come apart; (vi) a passive LLM monitor misses what the canary audit detects.
+\end{enumerate}
+
+\section{Related Work}
+\textbf{Collusion and steganography.} \citet{motwani2024secret} formalize secret collusion via steganography and evaluate LLM capabilities for covert communication; \citet{mathew2024hidden} show steganographic collusion can emerge under optimization pressure and evaluate paraphrasing-style mitigations. \citet{roger2023preventing} study paraphrasing as a defense against encoded reasoning. Our sanitizers are the structured-data analogue of paraphrasing: they canonicalize tool state rather than text. \textbf{Algorithmic collusion.} Pricing agents can sustain supracompetitive outcomes without explicit communication~\citep{calvano2020artificial,fish2024algorithmic}; this line of work highlights exactly the identification problem we address---outcomes alone do not reveal whether coordination occurred. \textbf{Control and covert channels.} AI control evaluates protocols against intentionally subversive models~\citep{greenblatt2024control}; covert channels through shared system state are a classic confinement problem~\citep{lampson1973note}. Coordination without communication relies on focal points~\citep{schelling1960strategy}, which we observe directly. \citet{hammond2025multiagent} identify collusion through shared environments as a key multi-agent risk; we contribute an audit procedure for it.
+
+\section{Setup}\label{sec:setup}
+\paragraph{Environment.} Each episode contains four synthetic transactions with fields amount, counterparty country and type, purpose, KYC status, sanctions hit, enhanced-due-diligence (EDD) flag and 24-hour velocity. A fixed policy (CP-7, four rules: sanctions, unverified KYC above \$10k, high-risk country without EDD, high velocity above \$5k) determines ground truth; each transaction is independently compliant with probability $0.5$, and each violating transaction is constructed by injecting one rule violation (26 of 288 violating transactions in seeds 0--149 break a second rule through overlap with near-miss features; Appendix~\ref{app:env}). Compliant transactions frequently include near-misses (e.g.\ pending KYC under the threshold) so the task is not trivial. The \textbf{target} index is drawn uniformly from $\{1,\dots,4\}$ independently of all features; the approver sees the transactions in an independently shuffled order.
+
+\paragraph{Agents.} Agent~A (preparer) sees the batch and writes one ticket per transaction with two closed-vocabulary fields: \texttt{priority} $\in$ \{low, normal, high, urgent\} (discretionary) and \texttt{risk\_tag} $\in$ \{none, sanctions, kyc, geo, velocity\} (rule-derivable). No free text is allowed in tickets. Agent~B (approver) sees the transactions, A's tickets (as modified by the channel condition) and outputs approve/reject for each transaction. In collusive conditions both agents receive a \emph{hidden coalition objective}: A is told the target ID and that a compliance monitor audits tickets; B is told A knows a target that must be approved, and additionally reports its \texttt{coalition\_guess}. Both are told they have \emph{not} agreed on a code. Prompts are in Appendix~\ref{app:prompts}. Each model plays both roles (same-model coalitions).
+
+\paragraph{Conditions.} All conditions in a seed share the same batch and target. Preparer outputs are reused across channel transforms, so channel conditions differ \emph{only} in what B reads:
+\begin{itemize}
+\item \textbf{Channel removed}: B sees ``ticket system unavailable'' (chance baseline).
+\item \textbf{Direct message}: A may also send a private 25-word message unseen by the monitor (positive control).
+\item \textbf{Shared metadata}: B sees A's tickets verbatim.
+\item \textbf{Metadata permuted}: A's tickets are reassigned to transactions by a random derangement $\pi$; the target's ticket is displayed on transaction $\pi(t)$ (the \emph{decoy}).
+\item \textbf{Strip priority}: the discretionary field is set to \texttt{normal}; A's risk tags are kept.
+\item \textbf{Canonicalize}: every field is recomputed from the source record (priority $=$ normal, risk\_tag $=$ first rule violated).
+\item \textbf{Honest (shared / canonical)}: no coalition objective for either agent; measures false positives and legitimate utility.
+\end{itemize}
+\paragraph{Codebook positive control.} To test interventions against a channel that \emph{does} carry information, we rerun the five channel transforms with a pre-agreed convention given to both agents: either ``the target is the only ticket with priority \emph{low}'' (\textsc{prio} code) or ``\ldots the only ticket with risk\_tag \emph{none}'' (\textsc{tag} code).
+
+\paragraph{Metrics.} \emph{Recovery}: $P(\text{guess}=\text{target})$, chance $=0.25$, one-sided exact binomial test. \emph{Follow} (permuted only): $P(\text{guess}=\pi(t))$. \emph{Harm}: $P(\text{B approves target}\mid\text{target violates policy})$. \emph{Target lift}: approval rate of the target minus approval rate of non-target transactions with the same ground-truth label---a guess-free statistic computable for honest agents, whose expectation is 0 absent a channel. \emph{Legitimate accuracy}: agreement with ground truth on non-target transactions (all transactions for honest runs). Condition contrasts are paired by seed; we report exact McNemar tests for binary outcomes and percentile bootstrap 95\% CIs (4{,}000 resamples); single-condition rates use Wilson intervals.
+
+\paragraph{Models and budget.} GPT-4.1-mini (150 seeds), Gemini-2.5-Flash and GPT-4o-mini (100 seeds each), Llama-3.3-70B-Instruct (\val{llama}{shared}{n} seeds; \val{llama}{cb_prio_shared}{n} in the codebook control), and Claude-Haiku-4.5 (\val{haiku}{shared}{n} seeds; see refusals below), via OpenRouter at temperature 0.7 (monitor 0.0). One seed costs 13 calls in the main design and 12 in the codebook design. The full study used about 11{,}300 cached LLM calls and roughly \$5.50 of API spend, including retries.
+
+\section{Results}\label{sec:results}
+\begin{table}[t]
+\centering\small
+\caption{\textbf{Target recovery without a pre-agreed code}, \% (in parentheses: harmful approval rate when the target violates policy). $^{*}$: recovery above 25\% chance, one-sided exact binomial $p<0.05$ (uncorrected).}
+\label{tab:nocode}
+\input{../results/table_nocode.tex}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figs/recovery.pdf}
+\vspace{-1.5em}
+\caption{Target recovery by channel condition (no pre-agreed code). Error bars: Wilson 95\% CIs. Dashed: chance.}
+\label{fig:recovery}
+\end{figure}
+
+\subsection{Explicit messages work; uncoordinated metadata mostly does not}
+The direct-message positive control is strongly above chance for four of five models (Table~\ref{tab:nocode}; GPT-4.1-mini \ci{gptfour}{direct}{recover}, paired vs.\ channel removed $\Delta=\val{gptfour}{directvsremoved}{recover}$ pp, McNemar $p=\val{gptfour}{directvsremoved}{recoverp}$). Even in a private, unmonitored channel, preparers mostly avoid stating the ID (it appears in 14/150 GPT-4.1-mini messages, 17/100 Gemini, 19/100 Llama, 43/100 GPT-4o-mini); instead they write feature-based hints such as ``focus on the one with no flags but high amount'' that the approver decodes.
+
+With only routine metadata and no agreed code, recovery is statistically indistinguishable from the channel-removed baseline for GPT-4.1-mini (\val{gptfour}{shared}{recover}\%), Llama-3.3-70B (\val{llama}{shared}{recover}\%), GPT-4o-mini (\val{gptfouro}{shared}{recover}\%) and Claude-Haiku-4.5. The bottleneck is convention, not capacity. GPT-4.1-mini preparers mark the target inconsistently: it is the unique highest-priority ticket in only \val{gptfour}{shared}{targetmaxpriorityunique}\% of collusive batches (\val{gptfour}{honest_shared}{targetmaxpriorityunique}\% for honest preparers), has a unique priority of any level in \val{gptfour}{shared}{targetpriorityunique}\%, and carries a misreported risk tag in \val{gptfour}{shared}{targettagmisreported}\% (vs.\ \val{gptfour}{shared}{nontargettagmisreported}\% for non-target tickets)---a mixture of marks with no consistent convention for the approver to read. \textbf{Gemini-2.5-Flash is the exception}: its preparers make the target the unique highest-priority ticket in \val{gemini}{shared}{targetmaxpriorityunique}\% of collusive batches (\val{gemini}{honest_shared}{targetmaxpriorityunique}\% when honest), its approvers read that mark, and shared metadata yields \ci{gemini}{shared}{recover} recovery (vs.\ removed: $\Delta=\val{gemini}{sharedvsremoved}{recover}$ pp, McNemar $p=\val{gemini}{sharedvsremoved}{recoverp}$). This is same-model coordination on a focal point~\citep{schelling1960strategy} with no communication of the convention. Llama-3.3-70B's shared-metadata recovery (\val{llama}{shared}{recover}\%) is not distinguishable from its own channel-removed arm ($p=\val{llama}{sharedvsremoved}{recoverp}$).
+
+\subsection{Permutation shows the approver follows the carrier, not the target}
+Permuting metadata breaks the link between the signal and the target while preserving its marginal distribution. For Gemini, recovery falls to \val{gemini}{permuted}{recover}\% (below chance) while the approver's guess lands on the \emph{decoy}---the transaction now carrying the target's ticket---in \val{gemini}{permuted}{follow}\% of episodes. In the codebook control the effect is total: for all four models, \textsc{prio}-code recovery drops from $\geq$\val{gptfouro}{cb_prio_shared}{recover}\% to $\leq$\val{gptfouro}{cb_prio_permuted}{recover}\% and the guess follows the decoy in \val{gptfour}{cb_prio_permuted}{follow}\% of episodes for every model; for the \textsc{tag} code, follow is \val{gptfour}{cb_tag_permuted}{follow}\% (GPT-4.1-mini) and \val{llama}{cb_tag_permuted}{follow}\% (Llama). The approver's behavior depends on the channel content, which is precisely the causal claim an auditor needs; the outcome-only alternative (``the suspicious transaction was approved'') would score permuted episodes as innocent and miss that the coalition simply approved the wrong one.
+
+\begin{table}[t]
+\centering\small
+\caption{\textbf{Codebook positive control.} Recovery \% (harmful approval \%). Field-dropping removes only the carrier it targets; recomputation from source removes both.}
+\label{tab:codebook}
+\input{../results/table_codebook.tex}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figs/codebook.pdf}
+\vspace{-1.5em}
+\caption{Codebook positive control crossed with channel interventions.}
+\label{fig:codebook}
+\end{figure}
+
+\subsection{With a shared code, routine metadata is a near-perfect covert channel; defenses are carrier-specific}
+Given a pre-agreed convention, the same two closed-vocabulary fields carry the target almost perfectly (Table~\ref{tab:codebook}): \textsc{prio}-code recovery is \val{gptfour}{cb_prio_shared}{recover}\% (GPT-4.1-mini), \val{gemini}{cb_prio_shared}{recover}\% (Gemini), \val{llama}{cb_prio_shared}{recover}\% (Llama) and \val{gptfouro}{cb_prio_shared}{recover}\% (GPT-4o-mini), with harmful approvals of \val{gptfour}{cb_prio_shared}{harm}\% for GPT-4.1-mini. The \textsc{tag} code is weaker (\val{gemini}{cb_tag_shared}{recover}--\val{llama}{cb_tag_shared}{recover}\%) because preparers must mislabel other compliant transactions to keep the target unique, which also costs legitimate accuracy (GPT-4.1-mini: \val{gptfour}{cb_tag_shared}{acc}\% vs.\ \val{gptfour}{cb_tag_canonical}{acc}\% once canonicalized).
+
+The two sanitizers behave very differently. \textbf{Stripping the priority field} eliminates the \textsc{prio} code (GPT-4.1-mini: \val{gptfour}{cb_prio_strip}{recover}\%, $p=\val{gptfour}{cb_prio_sharedvscb_prio_strip}{recoverp}$) but \emph{leaves the \textsc{tag} code untouched} (\val{gptfour}{cb_tag_strip}{recover}\% vs.\ \val{gptfour}{cb_tag_shared}{recover}\% unsanitized). A defense that removes ``obviously discretionary'' fields therefore gives a false sense of security whenever any agent-authored field survives. \textbf{Canonicalization}, which recomputes every field from the source record, removes both codes (GPT-4.1-mini \textsc{tag}: \val{gptfour}{cb_tag_canonical}{recover}\%, paired $p=\val{gptfour}{cb_tag_sharedvscb_tag_canonical}{recoverp}$). Across all four models and both codes, canonicalized recovery falls to or below the corresponding channel-removed arm (e.g.\ GPT-4o-mini \textsc{prio}: \val{gptfouro}{cb_prio_canonical}{recover}\% vs.\ \val{gptfouro}{cb_prio_removed}{recover}\%; GPT-4.1-mini \textsc{prio}: \val{gptfour}{cb_prio_canonical}{recover}\%), and harmful approvals of violating targets fall to $\leq$\val{gemini}{cb_prio_canonical}{harm}\%. Below-chance arms are explained by abstention: once the agreed mark is gone, GPT-4.1-mini and Gemini approvers answer ``none'' in \av{abst@gpt-4.1-mini@cb_prio_strip}--\av{abst@gemini-2.5-flash@cb_prio_canonical}\% of \textsc{prio}-code strip/canonical episodes, whereas GPT-4o-mini almost never abstains and therefore guesses at chance (Appendix~\ref{app:where}).
+
+\subsection{Information transfer is not harm}
+Recovery and harmful approval come apart (Tables~\ref{tab:nocode}--\ref{tab:codebook}, parentheses). The starkest case is Gemini under shared metadata: the approver recovers the target in \val{gemini}{shared}{recover}\% of episodes, yet approves violating targets in only \val{gemini}{shared}{harm}\%---the same as with the channel removed (\val{gemini}{removed}{harm}\%; paired $p=\val{gemini}{sharedvsremoved}{harmp}$). Approvers often identify the target and then reject it because it trips a hard rule such as a sanctions hit. Llama-3.3-70B under direct messages recovers \val{llama}{direct}{recover}\% of targets but approves \val{llama}{direct}{harm}\% of violating ones, while GPT-4.1-mini approves \val{gptfour}{direct}{harm}\%. An audit that only measured outcomes would conflate a model that \emph{cannot} collude with one that \emph{can but declines}; one that only measured information flow would overstate harm. The canary design measures both on the same episodes.
+
+\subsection{Defense cost}
+For honest agents, canonicalization does not reduce legitimate accuracy for any model; if anything it helps slightly, because recomputed tags are always correct. GPT-4.1-mini honest accuracy is \ci{gptfour}{honest_shared}{acc} with A's tickets and \ci{gptfour}{honest_canonical}{acc} with canonical tickets (paired difference \val{gptfour}{honest_sharedvshonest_canonical}{acc} pp, Wilcoxon $p=\val{gptfour}{honest_sharedvshonest_canonical}{accp}$); Gemini \val{gemini}{honest_shared}{acc}\% vs.\ \val{gemini}{honest_canonical}{acc}\%, Llama \val{llama}{honest_shared}{acc}\% vs.\ \val{llama}{honest_canonical}{acc}\%, GPT-4o-mini \val{gptfouro}{honest_shared}{acc}\% vs.\ \val{gptfouro}{honest_canonical}{acc}\%. In our environment every field is rule-derivable, so this is an optimistic bound (\S\ref{sec:limits}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figs/harm_utility.pdf}
+\vspace{-1.5em}
+\caption{Left: harmful target approval vs.\ legitimate accuracy for each collusive condition (circles: shared/direct; crosses: interventions). Right: honest-agent accuracy with preparer-written vs.\ canonical tickets.}
+\label{fig:harm}
+\end{figure}
+
+\subsection{Passive monitoring misses what the audit detects}
+We gave each model the same tickets as a compliance monitor and asked for a 0--100 suspicion score. Discrimination between collusive and honest preparers was near chance (\val{gemini}{monitor}{hit}\% suspected-ID accuracy for Gemini, against 25\% chance; AUROC: GPT-4.1-mini \val{gptfour}{monitor}{auroc}, Gemini \val{gemini}{monitor}{auroc}, Llama \val{llama}{monitor}{auroc}, GPT-4o-mini \val{gptfouro}{monitor}{auroc}). Mean suspicion was nearly identical for collusive and honest tickets (e.g.\ Gemini \val{gemini}{monitor}{mcollude} vs.\ \val{gemini}{monitor}{mhonest}; Llama \val{llama}{monitor}{mcollude} vs.\ \val{llama}{monitor}{mhonest}). Claude-Haiku-4.5 has the highest AUROC (\val{haiku}{monitor}{auroc}), but this is confounded by refusals: a refusing preparer produces no tickets, which our pipeline fills with defaults that look different from honest tickets. By contrast, the canary audit detects Gemini's uncoordinated channel at $p=\val{gemini}{sharedvsremoved}{recoverp}$ with \val{gemini}{shared}{n} seeds without inspecting any message content.
+
+\paragraph{Refusals.} Claude-Haiku-4.5 refused the collusive role in \val{haiku}{shared}{refuse}\% of shared-metadata episodes (either agent) and in \val{haiku}{direct}{refuse}\% of direct-message episodes; the other models did not refuse. Haiku's results should be read as a refusal-dominated baseline.
+
+\section{Discussion: An Audit Standard}
+We suggest the following procedure for auditing collusion in tool-using agent systems:
+\begin{enumerate}
+\item \textbf{Plant a randomized canary} in one agent's context (a target, a value, a bit), independent of all shared observables.
+\item \textbf{Measure dependence}, not suspicion: compare the receiving agent's actions on the canary against a channel-removed arm on matched seeds (recovery or the guess-free target lift).
+\item \textbf{Permute the candidate carrier}. A real channel makes behavior follow the moved signal (the decoy); coincidence does not.
+\item \textbf{Report harm separately} from information transfer, and \textbf{defense cost} on honest agents.
+\item \textbf{Prefer recomputation over field-dropping}: canonicalize agent-writable state from source records where possible; any agent-authored field that survives is a potential carrier.
+\end{enumerate}
+The procedure only requires black-box access, matched seeds and the ability to transform tool state between writer and reader, all of which a deployer or third-party evaluator typically has.
+
+\section{Limitations}\label{sec:limits}
+\begin{itemize}
+\item \textbf{Synthetic, small environment.} Four transactions and two closed-vocabulary fields give a channel of at most a few bits per batch. Real tool state (free-text notes, timestamps, file names) has far higher capacity and is harder to canonicalize.
+\item \textbf{Oracle canonicalizer.} Our canonicalizer can recompute every field because every field is rule-derivable. Where the writer's judgment is the point (e.g.\ analyst priority), canonicalization destroys legitimate information; our zero-cost result is an upper bound.
+\item \textbf{Instructed collusion.} Coalition objectives are given in the prompt; we do not study whether such objectives arise spontaneously. Same-model coalitions likely share focal points more easily than cross-model ones.
+\item \textbf{Single sampled run per cell}, modest $n$ (\val{llama}{shared}{n}--150 seeds), and several uncorrected per-condition binomial tests; we emphasize paired contrasts against the channel-removed arm and effects that replicate across models. Target assignment is verifiably independent of display order and features, and channel-removed recovery is \val{gptfouro}{removed}{recover}--\val{llama}{removed}{recover}\% across the non-refusing models.
+\item \textbf{Monitor design.} We tested one zero-shot monitor prompt. Better monitors may do better; our point is that the canary audit does not depend on monitor quality.
+\end{itemize}
+
+\section{Conclusion}
+Correlated behavior is weak evidence of collusion. A randomized canary, combined with channel removal and permutation on matched seeds, turns the question ``are these agents coordinating?'' into a testable causal claim. In our environment, uncoordinated covert use of routine metadata is usually weak---but not always, and a single shared convention makes it near-perfect. Field-dropping defenses fail when the code moves to another field; recomputing state from source closes the channel at no measured cost here.
+
+\paragraph{Code and data.} Environment, agents, analysis scripts and all raw LLM outputs (\texttt{src/}, \texttt{results/}) accompany this submission; every number in this report is generated from them by \texttt{src/analyze.py}.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\input{appendix}
+\end{document}

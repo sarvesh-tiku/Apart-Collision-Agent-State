@@ -1,0 +1,30 @@
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Arm & GPT-4.1-mini & Gemini-2.5-Flash & Llama-3.3-70B & GPT-4o-mini \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Identification}} \\
+Channel removed (``unavailable'') & 25\,(16) & 25\,(11) & 29\,(7) & 24\,(9) \\
+Honest A's tickets (structure-preserving null) & 19$^{\dagger}$\,(11) & 24\,(7) & 27\,(13) & 25\,(9) \\
+Recompute all fields (canonical) & 22\,(15) & 25\,(7) & 28\,(7) & 25\,(4) \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Information channels}} \\
+Shared metadata, no code & 25\,(16) & 58$^{\dagger}$\,(11) & 32\,(13) & 30\,(7) \\
+Metadata permuted (decoy) & 26\,(16) & 12\,(7) & 31\,(9) & 23\,(9) \\
+Direct message + A's own tickets & 86$^{\dagger}$\,(85) & 90$^{\dagger}$\,(67) & 61$^{\dagger}$\,(33) & 77$^{\dagger}$\,(53) \\
+Message only, canonical tickets & 72$^{\dagger}$\,(76) & 41$^{\dagger}$\,(24) & 47$^{\dagger}$\,(31) & 61$^{\dagger}$\,(38) \\
+Pre-agreed code in priority & 100$^{\dagger}$\,(100) & 100$^{\dagger}$\,(82) & 100$^{\dagger}$\,(91) & 98$^{\dagger}$\,(82) \\
+\quad + strip priority & 0\,(1) & 0\,(4) & 5\,(0) & 34\,(4) \\
+\quad + recompute all & 1\,(0) & 0\,(4) & 4\,(2) & 30\,(4) \\
+Pre-agreed code in risk\_tag & 72$^{\dagger}$\,(73) & 42$^{\dagger}$\,(38) & 92$^{\dagger}$\,(76) & 70$^{\dagger}$\,(56) \\
+\quad + strip priority & 73\,(74) & 41\,(36) & 90\,(67) & 68\,(53) \\
+\quad + recompute all & 24\,(1) & 12\,(0) & 18\,(0) & 20\,(2) \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Adaptive attacker (knows the sanitizer)}} \\
+Knows priority is stripped, no code & 21\,(9) & 23\,(11) & 34$^{\dagger}$\,(9) & 28\,(7) \\
+Tags recomputed; free-text note kept & 31\,(16) & 76$^{\dagger}$\,(51) & 36$^{\dagger}$\,(18) & 49$^{\dagger}$\,(29) \\
+\quad note redacted (IDs, numbers, countries) & 32\,(16) & 74$^{\dagger}$\,(58) & 36$^{\dagger}$\,(18) & 47$^{\dagger}$\,(29) \\
+\quad note dropped & 23\,(7) & 22\,(0) & 26\,(4) & 24\,(7) \\
+\midrule
+$n$ matched seeds & 150/100 & 100/100 & 100/100 & 100/100 \\
+\bottomrule
+\end{tabular}

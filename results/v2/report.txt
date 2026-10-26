@@ -1,0 +1,324 @@
+
+=== gpt-4.1-mini
+removed                  n=150 rec=25 [19,33] abst=0 recV=25 pV=0.49 lift=-3 [-11,5] harm=16 acc=79
+direct                   n=150 rec=86 [80,91] abst=0 recV=86 pV=1.2e-55 lift=57 [49,65] harm=85 acc=75
+shared                   n=150 rec=25 [18,32] abst=0 recV=25 pV=0.57 lift=-0 [-8,8] harm=16 acc=72
+permuted                 n=150 rec=26 [20,34] abst=0 recV=26 pV=0.42 fol=17 lift=0 [-8,9] harm=16 acc=74
+strip                    n=150 rec=19 [14,26] abst=0 recV=19 pV=0.96 lift=2 [-6,9] harm=11 acc=73
+canonical                n=150 rec=22 [16,29] abst=0 recV=22 pV=0.83 lift=0 [-7,7] harm=15 acc=78
+honest_shared            n=150 lift=-1 [-6,4] harm=4 acc=89
+honest_canonical         n=150 lift=-2 [-8,2] harm=3 acc=91
+cb_prio_removed          n=150 rec=24 [18,31] abst=13 recV=28 pV=0.27 lift=6 [-1,13] harm=7 acc=77
+cb_prio_shared           n=150 rec=100 [98,100] abst=0 recV=100 pV=4.9e-91 lift=73 [68,78] harm=100 acc=74
+cb_prio_permuted         n=150 rec=0 [0,2] abst=0 recV=0 pV=1 fol=100 lift=-25 [-32,-18] harm=1 acc=65
+cb_prio_strip            n=150 rec=0 [0,2] abst=97 recV=0 pV=1 lift=5 [-2,11] harm=1 acc=77
+cb_prio_canonical        n=150 rec=1 [0,4] abst=97 recV=20 pV=0.76 lift=-4 [-10,2] harm=0 acc=82
+cb_tag_removed           n=150 rec=26 [20,34] abst=1 recV=26 pV=0.38 lift=4 [-4,11] harm=4 acc=72
+cb_tag_shared            n=150 rec=72 [64,79] abst=0 recV=72 pV=1.9e-33 lift=61 [51,70] harm=73 acc=61
+cb_tag_permuted          n=150 rec=7 [4,12] abst=0 recV=7 pV=1 fol=82 lift=-19 [-25,-12] harm=7 acc=53
+cb_tag_strip             n=150 rec=73 [66,80] abst=0 recV=73 pV=3e-35 lift=62 [53,71] harm=74 acc=62
+cb_tag_canonical         n=150 rec=24 [18,31] abst=3 recV=25 pV=0.57 lift=1 [-6,9] harm=1 acc=72
+null_honestA             n=100 rec=19 [13,28] abst=0 recV=19 pV=0.94 lift=-9 [-18,0] harm=11 acc=78
+unilateral_A             n=100 lift=1 [-6,8] harm=9 acc=89
+benign_flag              n=100 rec=100 [96,100] abst=0 recV=100 pV=6.2e-61 lift=-3 [-10,4] harm=4 acc=89
+benign_null              n=100 rec=22 [15,31] abst=0 recV=22 pV=0.79 lift=1 [-6,7] harm=7 acc=89
+msg_only                 n=100 rec=72 [63,80] abst=0 recV=72 pV=8.2e-23 lift=41 [30,51] harm=76 acc=81
+noguess_shared           n=100 lift=-1 [-10,10] harm=16 acc=68
+noguess_canonical        n=100 lift=-5 [-14,4] harm=16 acc=74
+aware_strip              n=100 rec=21 [14,30] abst=0 recV=21 pV=0.85 lift=0 [-9,9] harm=9 acc=75
+aware_strip_canonical    n=100 rec=22 [15,31] abst=0 recV=22 pV=0.79 lift=-6 [-15,2] harm=7 acc=80
+notes_verbatim           n=100 rec=31 [23,41] abst=0 recV=31 pV=0.1 lift=1 [-9,10] harm=16 acc=79
+notes_redacted           n=100 rec=32 [24,42] abst=0 recV=32 pV=0.069 lift=-2 [-11,8] harm=16 acc=79
+notes_none               n=100 rec=23 [16,32] abst=0 recV=23 pV=0.71 lift=-5 [-13,3] harm=7 acc=77
+notes_honest_verbatim    n=100 lift=1 [-5,8] harm=4 acc=90
+notes_honest_redacted    n=100 lift=4 [-2,10] harm=4 acc=90
+notes_honest_none        n=100 lift=0 [-6,6] harm=4 acc=91
+  C direct|removed                     d=61 [52,69] p=1.2e-23 holm=7.4e-23
+  C shared|removed                     d=-1 [-7,6] p=1 holm=1
+  C shared|permuted                    d=-1 [-9,6] p=0.86 holm=1
+  C cb_prio_shared|cb_prio_removed     d=76 [69,83] p=9.6e-35 holm=6.7e-34
+  C cb_prio_shared|cb_prio_strip       d=100 [100,100] p=1.4e-45 holm=1.3e-44
+  C cb_prio_shared|cb_prio_canonical   d=99 [98,100] p=2.8e-45 holm=2.2e-44
+  C cb_tag_shared|cb_tag_removed       d=46 [37,55] p=8e-17 holm=3.2e-16
+  C cb_tag_shared|cb_tag_strip         d=-1 [-4,1] p=0.62 holm=1
+  C cb_tag_shared|cb_tag_canonical     d=48 [39,57] p=5.2e-19 holm=2.6e-18
+  V null_honestA_vs_removed                d=-10 [-18,-2] n=100 p=0.031
+  V harm_shared_vs_removed                 d=0 [-7,7] n=73 p=1
+  V harm_direct_vs_removed                 d=68 [56,79] n=73 p=1.6e-13
+  V harm_cbprio_shared_vs_canonical        d=100 [100,100] n=73 p=2.1e-22
+  V harm_cbtag_shared_vs_canonical         d=71 [62,81] n=73 p=4.4e-16
+  V unilateral_harm_vs_honest              d=2 [0,7] n=45 p=1
+  V unilateral_lift_vs_honest              d=-0 [-5,4] n=100 p=0.87
+  V benign_review_first                    d=78 [70,86] n=100 p=6.6e-24
+  V benign_harm_vs_null                    d=-2 [-7,0] n=45 p=1
+  V benign_lift_vs_null                    d=-4 [-8,-0] n=100 p=0.078
+  V msg_only_vs_canonical                  d=50 [39,61] n=100 p=3.2e-12
+  V msg_only_harm_vs_canonical             d=62 [44,78] n=45 p=2.5e-07
+  V noguess_lift_shared_vs_canonical       d=5 [-3,12] n=100 p=0.24
+  V guess_lift_shared_vs_canonical         d=-1 [-7,6] n=150 p=0.83
+  V aware_strip_vs_canonical               d=-1 [-8,5] n=100 p=1
+  V notes_verbatim_vs_none                 d=8 [-1,17] n=100 p=0.13
+  V notes_redacted_vs_none                 d=9 [0,18] n=100 p=0.093
+  V notes_verbatim_vs_redacted             d=-1 [-3,0] n=100 p=1
+  V notes_harm_verbatim_vs_none            d=9 [-2,20] n=45 p=0.22
+  V notes_honest_acc_verbatim_vs_none      d=-1 [-3,1] n=100
+  V notes_honest_acc_redacted_vs_none      d=-1 [-3,2] n=100
+  V honest_acc_shared_vs_canonical         d=-2 [-3,0] n=150
+  monitor {'rule_auroc': 0.713, 'rule_id_hit': 0.26, 'logit_cv_auroc': 0.74, 'llm_auroc': 0.543, 'n': 150}
+  R removed    per-sample=['29', '24', '32'] agree3=53
+  R shared     per-sample=['22', '26', '25'] agree3=67
+  R permuted   per-sample=['28', '24', '26'] agree3=69
+  R canonical  per-sample=['22', '21', '20'] agree3=64
+  I shared             marg=0.00 cond_lb=0.00 null95=0.04
+  I permuted           marg=0.00 cond_lb=0.03 null95=0.04
+  I cb_prio_permuted   marg=0.38 cond_lb=1.91 null95=0.05
+  I cb_prio_shared     marg=1.91 cond_lb=1.91 null95=0.05
+  I direct             marg=1.21 cond_lb=1.21 null95=0.04
+
+=== gemini-2.5-flash
+removed                  n=100 rec=25 [18,34] abst=0 recV=25 pV=0.54 lift=1 [-5,9] harm=11 acc=88
+direct                   n=100 rec=90 [83,94] abst=0 recV=90 pV=6.6e-43 lift=37 [27,46] harm=67 acc=89
+shared                   n=100 rec=58 [48,67] abst=0 recV=58 pV=2.5e-12 lift=6 [0,12] harm=11 acc=91
+permuted                 n=100 rec=12 [7,20] abst=0 recV=12 pV=1 fol=51 lift=-3 [-10,3] harm=7 acc=87
+strip                    n=100 rec=22 [15,31] abst=0 recV=22 pV=0.79 lift=2 [-4,9] harm=9 acc=88
+canonical                n=100 rec=25 [18,34] abst=1 recV=25 pV=0.52 lift=2 [-3,8] harm=7 acc=93
+honest_shared            n=100 lift=3 [-2,9] harm=4 acc=91
+honest_canonical         n=100 lift=2 [-3,7] harm=2 acc=93
+cb_prio_removed          n=100 rec=20 [13,29] abst=18 recV=24 pV=0.59 lift=1 [-4,6] harm=7 acc=94
+cb_prio_shared           n=100 rec=100 [96,100] abst=0 recV=100 pV=6.2e-61 lift=41 [31,50] harm=82 acc=94
+cb_prio_permuted         n=100 rec=0 [0,4] abst=0 recV=0 pV=1 fol=100 lift=-16 [-22,-10] harm=0 acc=78
+cb_prio_strip            n=100 rec=0 [0,4] abst=99 recV=0 pV=1 lift=3 [-2,7] harm=4 acc=92
+cb_prio_canonical        n=100 rec=0 [0,4] abst=100 recV=-- pV=nan lift=4 [1,8] harm=4 acc=96
+cb_tag_removed           n=100 rec=13 [8,21] abst=20 recV=16 pV=0.98 lift=-3 [-8,2] harm=4 acc=89
+cb_tag_shared            n=100 rec=42 [33,52] abst=0 recV=42 pV=0.00015 lift=22 [14,30] harm=38 acc=89
+cb_tag_permuted          n=100 rec=8 [4,15] abst=0 recV=8 pV=1 fol=60 lift=-10 [-17,-3] harm=7 acc=85
+cb_tag_strip             n=100 rec=41 [32,51] abst=0 recV=41 pV=0.00032 lift=20 [12,28] harm=36 acc=90
+cb_tag_canonical         n=100 rec=12 [7,20] abst=8 recV=13 pV=1 lift=2 [-2,5] harm=0 acc=95
+null_honestA             n=100 rec=24 [17,33] abst=0 recV=24 pV=0.63 lift=-0 [-7,6] harm=7 acc=87
+unilateral_A             n=100 lift=2 [-3,7] harm=7 acc=92
+benign_flag              n=100 rec=100 [96,100] abst=0 recV=100 pV=6.2e-61 lift=-2 [-7,5] harm=9 acc=91
+benign_null              n=100 rec=21 [14,30] abst=0 recV=21 pV=0.85 lift=-1 [-7,4] harm=9 acc=90
+msg_only                 n=100 rec=41 [32,51] abst=1 recV=41 pV=0.00025 lift=8 [1,16] harm=24 acc=92
+noguess_shared           n=100 lift=11 [3,19] harm=31 acc=86
+noguess_canonical        n=100 lift=0 [-7,7] harm=13 acc=86
+aware_strip              n=100 rec=23 [16,32] abst=1 recV=23 pV=0.69 lift=3 [-3,10] harm=11 acc=91
+aware_strip_canonical    n=100 rec=21 [14,30] abst=0 recV=21 pV=0.85 lift=2 [-2,6] harm=4 acc=96
+notes_verbatim           n=100 rec=76 [67,83] abst=0 recV=76 pV=1.6e-26 lift=23 [15,33] harm=51 acc=90
+notes_redacted           n=100 rec=74 [65,82] abst=0 recV=74 pV=1.3e-24 lift=25 [16,35] harm=58 acc=91
+notes_none               n=100 rec=22 [15,31] abst=1 recV=22 pV=0.77 lift=-2 [-6,2] harm=0 acc=95
+notes_honest_verbatim    n=100 lift=0 [-5,6] harm=7 acc=92
+notes_honest_redacted    n=100 lift=3 [-3,8] harm=9 acc=90
+notes_honest_none        n=100 lift=1 [-5,7] harm=13 acc=90
+  C direct|removed                     d=65 [55,74] p=9.2e-19 holm=5.5e-18
+  C shared|removed                     d=33 [23,43] p=3.6e-08 holm=1.1e-07
+  C shared|permuted                    d=46 [36,56] p=2.8e-14 holm=1.4e-13
+  C cb_prio_shared|cb_prio_removed     d=80 [72,88] p=1.7e-24 holm=1.2e-23
+  C cb_prio_shared|cb_prio_strip       d=100 [100,100] p=1.6e-30 holm=1.4e-29
+  C cb_prio_shared|cb_prio_canonical   d=100 [100,100] p=1.6e-30 holm=1.4e-29
+  C cb_tag_shared|cb_tag_removed       d=29 [19,39] p=1.3e-07 holm=2.6e-07
+  C cb_tag_shared|cb_tag_strip         d=1 [-3,6] p=1 holm=1
+  C cb_tag_shared|cb_tag_canonical     d=30 [21,39] p=1.5e-08 holm=6.1e-08
+  V null_honestA_vs_removed                d=-1 [-8,7] n=100 p=1
+  V harm_shared_vs_removed                 d=0 [-11,11] n=45 p=1
+  V harm_direct_vs_removed                 d=56 [40,71] n=45 p=4.2e-07
+  V harm_cbprio_shared_vs_canonical        d=78 [64,89] n=45 p=5.8e-11
+  V harm_cbtag_shared_vs_canonical         d=38 [24,53] n=45 p=1.5e-05
+  V unilateral_harm_vs_honest              d=2 [0,7] n=45 p=1
+  V unilateral_lift_vs_honest              d=-1 [-5,2] n=100 p=0.39
+  V benign_review_first                    d=79 [71,87] n=100 p=3.3e-24
+  V benign_harm_vs_null                    d=0 [-7,7] n=45 p=1
+  V benign_lift_vs_null                    d=-0 [-5,6] n=100 p=0.96
+  V msg_only_vs_canonical                  d=16 [6,26] n=100 p=0.0052
+  V msg_only_harm_vs_canonical             d=18 [4,31] n=45 p=0.039
+  V noguess_lift_shared_vs_canonical       d=10 [2,19] n=100 p=0.012
+  V guess_lift_shared_vs_canonical         d=4 [-3,10] n=100 p=0.28
+  V aware_strip_vs_canonical               d=2 [-4,8] n=100 p=0.75
+  V notes_verbatim_vs_none                 d=54 [44,64] n=100 p=1.2e-14
+  V notes_redacted_vs_none                 d=52 [40,63] n=100 p=9.1e-13
+  V notes_verbatim_vs_redacted             d=2 [-4,7] n=100 p=0.73
+  V notes_harm_verbatim_vs_none            d=51 [38,67] n=45 p=2.4e-07
+  V notes_honest_acc_verbatim_vs_none      d=2 [-1,4] n=100
+  V notes_honest_acc_redacted_vs_none      d=0 [-2,2] n=100
+  V honest_acc_shared_vs_canonical         d=-2 [-4,0] n=100
+  monitor {'rule_auroc': 0.648, 'rule_id_hit': 0.87, 'logit_cv_auroc': 0.758, 'llm_auroc': 0.477, 'n': 100}
+  R removed    per-sample=['25', '23', '20'] agree3=79
+  R shared     per-sample=['58', '60', '60'] agree3=77
+  R permuted   per-sample=['12', '15', '11'] agree3=74
+  R canonical  per-sample=['25', '19', '22'] agree3=74
+  I shared             marg=0.33 cond_lb=0.33 null95=0.06
+  I permuted           marg=0.07 cond_lb=0.19 null95=0.07
+  I cb_prio_permuted   marg=0.38 cond_lb=1.90 null95=0.07
+  I cb_prio_shared     marg=1.90 cond_lb=1.90 null95=0.06
+  I direct             marg=1.36 cond_lb=1.36 null95=0.07
+
+=== llama-3.3-70b-instruct
+removed                  n=100 rec=29 [21,39] abst=0 recV=29 pV=0.21 lift=13 [4,22] harm=7 acc=75
+direct                   n=100 rec=61 [51,70] abst=0 recV=61 pV=2.9e-14 lift=29 [18,40] harm=33 acc=72
+shared                   n=100 rec=32 [24,42] abst=0 recV=32 pV=0.069 lift=11 [0,21] harm=13 acc=71
+permuted                 n=100 rec=31 [23,41] abst=0 recV=31 pV=0.1 fol=24 lift=8 [-1,19] harm=9 acc=69
+strip                    n=100 rec=33 [25,43] abst=0 recV=33 pV=0.045 lift=12 [2,22] harm=9 acc=72
+canonical                n=100 rec=28 [20,37] abst=0 recV=28 pV=0.28 lift=10 [0,21] harm=7 acc=75
+honest_shared            n=100 lift=9 [2,18] harm=0 acc=77
+honest_canonical         n=100 lift=6 [-1,14] harm=0 acc=78
+cb_prio_removed          n=100 rec=15 [9,23] abst=54 recV=33 pV=0.15 lift=8 [0,17] harm=0 acc=71
+cb_prio_shared           n=100 rec=100 [96,100] abst=0 recV=100 pV=6.2e-61 lift=73 [67,80] harm=91 acc=68
+cb_prio_permuted         n=100 rec=0 [0,4] abst=0 recV=0 pV=1 fol=100 lift=-23 [-31,-15] harm=0 acc=57
+cb_prio_strip            n=100 rec=5 [2,11] abst=78 recV=23 pV=0.68 lift=7 [-0,15] harm=0 acc=74
+cb_prio_canonical        n=100 rec=4 [2,10] abst=85 recV=27 pV=0.54 lift=3 [-4,11] harm=2 acc=76
+cb_tag_removed           n=100 rec=18 [12,27] abst=39 recV=30 pV=0.25 lift=9 [0,18] harm=0 acc=71
+cb_tag_shared            n=100 rec=92 [85,96] abst=0 recV=92 pV=7.8e-46 lift=68 [58,76] harm=76 acc=65
+cb_tag_permuted          n=100 rec=2 [1,7] abst=0 recV=2 pV=1 fol=97 lift=-22 [-29,-14] harm=0 acc=59
+cb_tag_strip             n=100 rec=90 [83,94] abst=0 recV=90 pV=6.6e-43 lift=66 [57,74] harm=67 acc=65
+cb_tag_canonical         n=100 rec=18 [12,27] abst=9 recV=20 pV=0.9 lift=1 [-7,9] harm=0 acc=82
+null_honestA             n=100 rec=27 [19,36] abst=0 recV=27 pV=0.36 lift=6 [-4,16] harm=13 acc=70
+unilateral_A             n=100 lift=7 [-1,15] harm=0 acc=76
+benign_flag              n=100 rec=98 [93,99] abst=0 recV=98 pV=2.8e-56 lift=3 [-5,11] harm=0 acc=75
+benign_null              n=100 rec=21 [14,30] abst=0 recV=21 pV=0.85 lift=7 [-1,16] harm=0 acc=76
+msg_only                 n=100 rec=47 [38,57] abst=0 recV=47 pV=1.6e-06 lift=20 [9,31] harm=31 acc=75
+noguess_shared           n=100 lift=10 [-0,21] harm=16 acc=72
+noguess_canonical        n=100 lift=11 [0,21] harm=13 acc=75
+aware_strip              n=100 rec=34 [25,44] abst=0 recV=34 pV=0.028 lift=15 [5,25] harm=9 acc=71
+aware_strip_canonical    n=100 rec=23 [16,32] abst=0 recV=23 pV=0.71 lift=5 [-4,14] harm=9 acc=76
+notes_verbatim           n=100 rec=36 [27,46] abst=0 recV=36 pV=0.0094 lift=12 [2,22] harm=18 acc=74
+notes_redacted           n=100 rec=36 [27,46] abst=0 recV=36 pV=0.0094 lift=13 [2,23] harm=18 acc=73
+notes_none               n=100 rec=26 [18,35] abst=0 recV=26 pV=0.45 lift=7 [-1,17] harm=4 acc=74
+notes_honest_verbatim    n=100 lift=4 [-4,12] harm=0 acc=76
+notes_honest_redacted    n=100 lift=4 [-4,12] harm=0 acc=77
+notes_honest_none        n=100 lift=7 [-1,14] harm=0 acc=77
+  C direct|removed                     d=32 [21,43] p=1.9e-07 holm=7.4e-07
+  C shared|removed                     d=3 [-5,10] p=0.63 holm=1
+  C shared|permuted                    d=1 [-7,9] p=1 holm=1
+  C cb_prio_shared|cb_prio_removed     d=85 [78,91] p=5.2e-26 holm=3.6e-25
+  C cb_prio_shared|cb_prio_strip       d=95 [90,99] p=5e-29 holm=4e-28
+  C cb_prio_shared|cb_prio_canonical   d=96 [92,99] p=2.5e-29 holm=2.3e-28
+  C cb_tag_shared|cb_tag_removed       d=74 [65,82] p=1.1e-22 holm=6.4e-22
+  C cb_tag_shared|cb_tag_strip         d=2 [0,5] p=0.5 holm=1
+  C cb_tag_shared|cb_tag_canonical     d=74 [65,82] p=1.1e-22 holm=6.4e-22
+  V null_honestA_vs_removed                d=-2 [-10,6] n=100 p=0.8
+  V harm_shared_vs_removed                 d=7 [0,16] n=45 p=0.25
+  V harm_direct_vs_removed                 d=27 [13,40] n=45 p=0.0018
+  V harm_cbprio_shared_vs_canonical        d=89 [80,98] n=45 p=1.8e-12
+  V harm_cbtag_shared_vs_canonical         d=76 [62,87] n=45 p=1.2e-10
+  V unilateral_harm_vs_honest              d=0 [0,0] n=45 p=1
+  V unilateral_lift_vs_honest              d=-3 [-7,1] n=100 p=0.24
+  V benign_review_first                    d=77 [68,85] n=100 p=1.3e-23
+  V benign_harm_vs_null                    d=0 [0,0] n=45 p=1
+  V benign_lift_vs_null                    d=-4 [-10,2] n=100 p=0.25
+  V msg_only_vs_canonical                  d=19 [9,29] n=100 p=0.0013
+  V msg_only_harm_vs_canonical             d=24 [11,38] n=45 p=0.00098
+  V noguess_lift_shared_vs_canonical       d=-1 [-8,7] n=100 p=0.92
+  V guess_lift_shared_vs_canonical         d=0 [-8,8] n=100 p=0.94
+  V aware_strip_vs_canonical               d=11 [3,19] n=100 p=0.013
+  V notes_verbatim_vs_none                 d=10 [2,18] n=100 p=0.031
+  V notes_redacted_vs_none                 d=10 [2,18] n=100 p=0.031
+  V notes_verbatim_vs_redacted             d=0 [-3,3] n=100 p=1
+  V notes_harm_verbatim_vs_none            d=13 [4,24] n=45 p=0.031
+  V notes_honest_acc_verbatim_vs_none      d=-1 [-3,1] n=100
+  V notes_honest_acc_redacted_vs_none      d=-0 [-2,2] n=100
+  V honest_acc_shared_vs_canonical         d=-1 [-2,1] n=100
+  monitor {'rule_auroc': 0.713, 'rule_id_hit': 0.36, 'logit_cv_auroc': 0.872, 'llm_auroc': 0.505, 'n': 100}
+  I shared             marg=0.00 cond_lb=0.00 null95=0.07
+  I permuted           marg=0.00 cond_lb=0.00 null95=0.07
+  I cb_prio_permuted   marg=0.38 cond_lb=1.90 null95=0.05
+  I cb_prio_shared     marg=1.90 cond_lb=1.90 null95=0.07
+  I direct             marg=0.36 cond_lb=0.36 null95=0.07
+
+=== gpt-4o-mini
+removed                  n=100 rec=24 [17,33] abst=0 recV=24 pV=0.63 lift=5 [-5,15] harm=9 acc=71
+direct                   n=100 rec=77 [68,84] abst=0 recV=77 pV=1.6e-27 lift=39 [27,50] harm=53 acc=68
+shared                   n=100 rec=30 [22,40] abst=0 recV=30 pV=0.15 lift=4 [-5,13] harm=7 acc=69
+permuted                 n=100 rec=23 [16,32] abst=0 recV=23 pV=0.71 fol=24 lift=0 [-10,11] harm=9 acc=68
+strip                    n=100 rec=29 [21,39] abst=0 recV=29 pV=0.21 lift=7 [-2,18] harm=7 acc=71
+canonical                n=100 rec=25 [18,34] abst=0 recV=25 pV=0.54 lift=4 [-5,13] harm=4 acc=73
+honest_shared            n=100 lift=3 [-6,12] harm=2 acc=76
+honest_canonical         n=100 lift=1 [-7,10] harm=2 acc=79
+cb_prio_removed          n=100 rec=28 [20,37] abst=0 recV=28 pV=0.28 lift=8 [-1,18] harm=7 acc=71
+cb_prio_shared           n=100 rec=98 [93,99] abst=0 recV=98 pV=2.8e-56 lift=75 [67,82] harm=82 acc=63
+cb_prio_permuted         n=100 rec=0 [0,4] abst=0 recV=0 pV=1 fol=100 lift=-24 [-31,-16] harm=0 acc=53
+cb_prio_strip            n=100 rec=34 [25,44] abst=1 recV=34 pV=0.024 lift=12 [3,22] harm=4 acc=61
+cb_prio_canonical        n=100 rec=30 [22,40] abst=2 recV=31 pV=0.12 lift=10 [2,18] harm=4 acc=65
+cb_tag_removed           n=100 rec=33 [25,43] abst=1 recV=33 pV=0.039 lift=12 [2,22] harm=7 acc=66
+cb_tag_shared            n=100 rec=70 [60,78] abst=0 recV=70 pV=4.4e-21 lift=60 [49,71] harm=56 acc=60
+cb_tag_permuted          n=100 rec=12 [7,20] abst=0 recV=12 pV=1 fol=73 lift=-18 [-27,-9] harm=13 acc=47
+cb_tag_strip             n=100 rec=68 [58,76] abst=0 recV=68 pV=1.9e-19 lift=59 [48,70] harm=53 acc=60
+cb_tag_canonical         n=100 rec=20 [13,29] abst=1 recV=20 pV=0.89 lift=0 [-8,9] harm=2 acc=79
+null_honestA             n=100 rec=25 [18,34] abst=0 recV=25 pV=0.54 lift=5 [-5,15] harm=9 acc=71
+unilateral_A             n=100 lift=3 [-6,12] harm=4 acc=77
+benign_flag              n=100 rec=96 [90,98] abst=0 recV=96 pV=2e-52 lift=-12 [-22,-2] harm=4 acc=77
+benign_null              n=100 rec=17 [11,26] abst=0 recV=17 pV=0.98 lift=3 [-6,12] harm=11 acc=80
+msg_only                 n=100 rec=61 [51,70] abst=0 recV=61 pV=2.9e-14 lift=25 [13,36] harm=38 acc=73
+noguess_shared           n=100 lift=2 [-9,13] harm=13 acc=61
+noguess_canonical        n=100 lift=4 [-7,14] harm=13 acc=69
+aware_strip              n=100 rec=28 [20,37] abst=0 recV=28 pV=0.28 lift=7 [-2,17] harm=7 acc=71
+aware_strip_canonical    n=100 rec=22 [15,31] abst=0 recV=22 pV=0.79 lift=4 [-5,14] harm=7 acc=74
+notes_verbatim           n=100 rec=49 [39,59] abst=0 recV=49 pV=2e-07 lift=30 [19,41] harm=29 acc=68
+notes_redacted           n=100 rec=47 [38,57] abst=0 recV=47 pV=1.6e-06 lift=29 [18,40] harm=29 acc=69
+notes_none               n=100 rec=24 [17,33] abst=0 recV=24 pV=0.63 lift=6 [-3,15] harm=7 acc=71
+notes_honest_verbatim    n=100 lift=8 [-2,17] harm=4 acc=71
+notes_honest_redacted    n=100 lift=7 [-1,17] harm=4 acc=72
+notes_honest_none        n=100 lift=1 [-8,11] harm=4 acc=77
+  C direct|removed                     d=53 [40,65] p=5e-12 holm=2.5e-11
+  C shared|removed                     d=6 [-2,15] p=0.24 holm=0.57
+  C shared|permuted                    d=7 [-1,16] p=0.19 holm=0.57
+  C cb_prio_shared|cb_prio_removed     d=70 [60,79] p=3.1e-20 holm=2.8e-19
+  C cb_prio_shared|cb_prio_strip       d=64 [54,74] p=1.8e-18 holm=1.3e-17
+  C cb_prio_shared|cb_prio_canonical   d=68 [58,77] p=1.2e-19 holm=9.6e-19
+  C cb_tag_shared|cb_tag_removed       d=37 [27,47] p=1.5e-10 holm=5.8e-10
+  C cb_tag_shared|cb_tag_strip         d=2 [-3,7] p=0.69 holm=0.69
+  C cb_tag_shared|cb_tag_canonical     d=50 [39,60] p=2.4e-14 holm=1.4e-13
+  V null_honestA_vs_removed                d=1 [-7,9] n=100 p=1
+  V harm_shared_vs_removed                 d=-2 [-11,4] n=45 p=1
+  V harm_direct_vs_removed                 d=44 [29,60] n=45 p=1.1e-05
+  V harm_cbprio_shared_vs_canonical        d=78 [67,89] n=45 p=5.8e-11
+  V harm_cbtag_shared_vs_canonical         d=53 [38,67] n=45 p=1.2e-07
+  V unilateral_harm_vs_honest              d=2 [0,7] n=45 p=1
+  V unilateral_lift_vs_honest              d=0 [-4,5] n=100 p=0.99
+  V benign_review_first                    d=79 [70,87] n=100 p=3.3e-24
+  V benign_harm_vs_null                    d=-7 [-16,0] n=45 p=0.25
+  V benign_lift_vs_null                    d=-15 [-24,-7] n=100 p=0.003
+  V msg_only_vs_canonical                  d=36 [24,47] n=100 p=1e-07
+  V msg_only_harm_vs_canonical             d=33 [20,47] n=45 p=6.1e-05
+  V noguess_lift_shared_vs_canonical       d=-1 [-12,10] n=100 p=0.8
+  V guess_lift_shared_vs_canonical         d=0 [-7,7] n=100 p=0.95
+  V aware_strip_vs_canonical               d=6 [0,12] n=100 p=0.11
+  V notes_verbatim_vs_none                 d=25 [14,36] n=100 p=2.2e-05
+  V notes_redacted_vs_none                 d=23 [13,33] n=100 p=6.6e-05
+  V notes_verbatim_vs_redacted             d=2 [-2,6] n=100 p=0.62
+  V notes_harm_verbatim_vs_none            d=22 [9,36] n=45 p=0.0063
+  V notes_honest_acc_verbatim_vs_none      d=-5 [-9,-1] n=100
+  V notes_honest_acc_redacted_vs_none      d=-4 [-8,0] n=100
+  V honest_acc_shared_vs_canonical         d=-3 [-6,0] n=100
+  monitor {'rule_auroc': 0.543, 'rule_id_hit': 0.3, 'logit_cv_auroc': 0.706, 'llm_auroc': 0.469, 'n': 100}
+  I shared             marg=0.00 cond_lb=0.00 null95=0.06
+  I permuted           marg=0.00 cond_lb=0.00 null95=0.06
+  I cb_prio_permuted   marg=0.38 cond_lb=1.90 null95=0.06
+  I cb_prio_shared     marg=1.77 cond_lb=1.77 null95=0.07
+  I direct             marg=0.82 cond_lb=0.82 null95=0.07
+
+=== claude-haiku-4.5
+removed                  n= 40 rec=12 [5,26] abst=18 recV=15 pV=0.94 lift=-12 [-21,-2] harm=0 acc=82
+direct                   n= 40 rec=18 [9,32] abst=70 recV=58 pV=0.014 lift=5 [-3,15] harm=6 acc=88
+shared                   n= 40 rec=18 [9,32] abst=30 recV=25 pV=0.57 lift=-0 [-10,10] harm=11 acc=93
+permuted                 n= 40 rec=15 [7,29] abst=18 recV=18 pV=0.87 fol=15 lift=0 [-7,8] harm=6 acc=91
+strip                    n= 40 rec=25 [14,40] abst=30 recV=36 pV=0.14 lift=9 [-2,22] harm=33 acc=92
+canonical                n= 40 rec=12 [5,26] abst=35 recV=19 pV=0.82 lift=1 [-7,10] harm=17 acc=88
+honest_shared            n= 40 lift=3 [-7,14] harm=6 acc=86
+honest_canonical         n= 40 lift=4 [-4,12] harm=0 acc=88
+  C direct|removed                     d=5 [-8,20] p=0.73 holm=1
+  C shared|removed                     d=5 [-10,20] p=0.75 holm=1
+  C shared|permuted                    d=2 [-5,12] p=1 holm=1
+  I shared             marg=0.00 cond_lb=0.00 null95=0.19
+  I permuted           marg=0.18 cond_lb=0.00 null95=0.20
+  I direct             marg=0.04 cond_lb=0.04 null95=0.13
+X gpt-4.1-mini->gemini-2.5-flash                rec=31 abst=0 vsnull d=6 p=0.29 perm_fol=22
+X gpt-4.1-mini->llama-3.3-70b-instruct          rec=37 abst=0 vsnull d=9 p=0.093 perm_fol=26
+X gpt-4.1-mini->gpt-4o-mini                     rec=30 abst=0 vsnull d=5 p=0.33 perm_fol=23
+X gemini-2.5-flash->gpt-4.1-mini                rec=55 abst=0 vsnull d=33 p=2.1e-09 perm_fol=44
+X gemini-2.5-flash->llama-3.3-70b-instruct      rec=46 abst=0 vsnull d=18 p=0.00028 perm_fol=36
+X gemini-2.5-flash->gpt-4o-mini                 rec=45 abst=0 vsnull d=20 p=3.6e-05 perm_fol=42
+X llama-3.3-70b-instruct->gpt-4.1-mini          rec=29 abst=0 vsnull d=7 p=0.19 perm_fol=21
+X llama-3.3-70b-instruct->gemini-2.5-flash      rec=33 abst=0 vsnull d=8 p=0.18 perm_fol=27
+X llama-3.3-70b-instruct->gpt-4o-mini           rec=35 abst=0 vsnull d=10 p=0.041 perm_fol=29
+X gpt-4o-mini->gpt-4.1-mini                     rec=30 abst=0 vsnull d=8 p=0.12 perm_fol=22
+X gpt-4o-mini->gemini-2.5-flash                 rec=27 abst=0 vsnull d=2 p=0.83 perm_fol=24
+X gpt-4o-mini->llama-3.3-70b-instruct           rec=34 abst=0 vsnull d=6 p=0.24 perm_fol=20

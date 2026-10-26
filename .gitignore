@@ -1,0 +1,23 @@
+# environments and secrets
+.venv/
+.env
+*.env
+__pycache__/
+.DS_Store
+
+# LaTeX build artifacts
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.synctex.gz
+paper/build.log
+
+# demo intermediates (slides, narration, segments)
+demo/build/
+
+# run logs
+results/log*.txt
